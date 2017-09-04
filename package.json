@@ -1,0 +1,27 @@
+{
+  "name": "critical-reasonmling",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "bs-webapi": "^0.5.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-typist": "^1.1.1",
+    "reason-scripts": "0.6.8",
+    "spectacle": "^2.2.2",
+    "spectacle-code-slide": "^0.4.0",
+    "spectacle-terminal": "^0.3.0"
+  },
+  "scripts": {
+    "clean-lib": "rm -rf lib",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "prepare": "npm link bs-platform"
+  },
+  "devDependencies": {
+    "bs-jest": "^0.1.0",
+    "reason-react": "^0.2.4"
+  }
+}

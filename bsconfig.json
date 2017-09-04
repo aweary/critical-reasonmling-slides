@@ -1,0 +1,21 @@
+{
+  "name": "reason-scripts",
+  "bsc-flags": ["-bs-no-version-header", "-bs-super-errors"],
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": [
+        { "dir": "spectacle" },
+        { "dir": "slides" }
+      ]
+    }
+  ],
+  "bs-dependencies": [
+    "reason-react",
+    "bs-jest",
+    "bs-webapi"
+  ],
+  "reason": {
+    "react-jsx": 2
+  }
+}
