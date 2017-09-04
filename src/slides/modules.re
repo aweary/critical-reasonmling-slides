@@ -1,10 +1,16 @@
 let snippet = {js|
-  let fullName = {
-  let firstName = "Brandon";
-  let lastName = "Dail";
-  firstName ^ " " ^ lastName
-  };
-/* fullName equals "Brandon Dail"*/
+module School = {
+  type profession = Teacher | Director;
+  let getProfession person =>
+    switch person {
+    | Teacher => "A teacher"
+    | Director => "A director"
+    };
+};
+
+let mrFoobar = School.Teacher;
+print_endline (School.getProfession mrFoobar);
+/* "A teacher" */
 |js};
 
 let make () => {
@@ -15,7 +21,7 @@ let make () => {
         fun highlight => {
           let id = "bindings" ^ highlight;
           <Slide id key=id>
-            <Heading size=1> (ReasonReact.stringToElement "Let Bindings and Scoping") </Heading>
+            <Heading size=1> (ReasonReact.stringToElement "Modules") </Heading>
             <Code highlight source=snippet />
           </Slide>
         }

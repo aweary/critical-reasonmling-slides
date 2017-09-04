@@ -13,16 +13,18 @@ let make _children => {
       <Deck theme>
         (Introduction.make ())
         (GoodThings.make ())
+        (SoHotRightNow.make ())
         (Pitch.make ())
-        (Bindings.make ())
-        (Variants.make ())
-        (PatternMatchingVariants.make ())
         <Compiler />
+        (Modules.make ())
+        (PatternMatchingVariants.make ())
         <GettingStarted />
+        (TheEnd.make ())
         (ReasonReactIntro.make ())
         (ReactIntro.make ())
         (ComponentTemplate.make ())
         (StatelessComponent.make ())
+        <StartingReasonReactProject />
       </Deck>
     </div>
 };

@@ -7,21 +7,24 @@ type color =
   | Other
 |js};
 
-let patternMatching = {js|
-let hex color => switch color {
-  | Red => "#FF0000"
-  | Green => "#00FF00"
-  | Blue => "#0000FF"
-  | Other hex => hex
+let patternMatching = {js|type schoolPerson = \n  Teacher \n| Director \n| Student string;
+  
+let greeting =
+  switch stranger {
+  | Teacher => "Hey professor!"
+  | Director => "Hello director."
+  | Student "Richard" => "Still here Ricky?"
+  | Student anyOtherName => "Hey, " ^ anyOtherName ^ "."
   };
 |js};
-
-let patternMatchingError = {js|
-let hex color => switch color {
-  | Red => "#FF0000"
-  | Green => "#00FF00"
-/* | Blue => "#0000FF" */
-  | Other hex => hex
+let patternMatchingError = {js|type schoolPerson = \n  Teacher \n| Director \n| Student string;
+  
+let greeting =
+  switch stranger {
+  | Teacher => "Hey professor!"
+  /* | Director => "Hello director." */
+  | Student "Richard" => "Still here Ricky?"
+  | Student anyOtherName => "Hey, " ^ anyOtherName ^ "."
   };
 |js};
 
