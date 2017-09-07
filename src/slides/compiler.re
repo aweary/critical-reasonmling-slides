@@ -32,53 +32,49 @@ type action =
 let str = ReasonReact.stringToElement;
 
 let stepBlockStyle =
-ReactDOMRe.Style.make
-  backgroundColor::"grey" color::"white" padding::"20px" margin::"10px" borderRadius::"10px" ();
+  ReactDOMRe.Style.make
+    backgroundColor::"grey" color::"white" padding::"20px" margin::"10px" borderRadius::"10px" ();
 
 let activeStepBlockStyle =
-ReactDOMRe.Style.combine stepBlockStyle (ReactDOMRe.Style.make backgroundColor::"#03a9f4" ());
-
+  ReactDOMRe.Style.combine stepBlockStyle (ReactDOMRe.Style.make backgroundColor::"#03a9f4" ());
 
 let reasonLogo =
   <img
-    style=(ReactDOMRe.Style.make position::"absolute" top::"143px" left::"-120px" width::"150px" ())
+    style=(
+      ReactDOMRe.Style.make position::"absolute" top::"143px" left::"-120px" width::"150px" ()
+    )
     src=Assets.reasonLogo
   />;
 
 let buckleScriptLogo =
   <img
-    style=(ReactDOMRe.Style.make position::"absolute" top::"406px" left::"-120px" width::"150px" ())
+    style=(
+      ReactDOMRe.Style.make position::"absolute" top::"406px" left::"-120px" width::"150px" ()
+    )
     src=Assets.reasonLogo
   />;
 
 let renderOverview () => {
-  let sequence = [|SourceCode, UntypedAST, TypedAST, LambdaIR, Bytecode|];
-  let titles = [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "Bytecode"|];
-  let descriptions = [|
-    "Take some OCaml source Code",
-    "Do some parsing, lexing and preprocessing\nto get an untyped AST of the source Code",
-    "Perform type inference and validation to get\na type-annotated version of the AST",
-    "Transform that typed AST into an untyped\nIR in the form of s-expressions",
-    "Do a lot of hand waving and compile the Lambda\nIR to bytecode or native"
-  |];
-  ReasonReact.arrayToElement (
-    Js.Array.mapi
-      (
-        fun _ i => {
-          let title = ReasonReact.stringToElement titles.(i);
-          <Layout>
-            <Fill> <div style=activeStepBlockStyle> title </div> </Fill>
-            <Fill>
-              <Text textSize="30px" padding="6px" textColor="#333333">
-                (ReasonReact.stringToElement descriptions.(i))
-              </Text>
-            </Fill>
-          </Layout>
-        }
-      )
-      sequence
-  )
+  let steps =
+    ReasonReact.arrayToElement (
+      Js.Array.map
+        (
+          fun title =>
+            <Layout>
+              <Fill>
+                <div style=activeStepBlockStyle> (ReasonReact.stringToElement title) </div>
+              </Fill>
+            </Layout>
+        )
+        [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "Bytecode"|]
+    );
+  <div>
+    <Heading size=4> (ReasonReact.stringToElement "The OCaml Compiler") </Heading>
+    <br />
+    steps
+  </div>
 };
+
 let renderStandardSequence active => {
   let sequence = [|SourceCode, UntypedAST, TypedAST, LambdaIR, Bytecode|];
   let titles = [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "Bytecode"|];
@@ -126,8 +122,7 @@ let renderReasonMLStep () => {
         (
           fun phase i => {
             let title = ReasonReact.stringToElement titles.(i);
-            let style =
-              phase === ReasonML ? activeStepBlockStyle : stepBlockStyle;
+            let style = phase === ReasonML ? activeStepBlockStyle : stepBlockStyle;
             let descriptionColor = phase === ReasonML ? "#333333" : "#CCCCCC";
             <Layout>
               <Fill> <div style> title </div> </Fill>
@@ -154,33 +149,29 @@ let renderBuckleScriptStep () => {
     "BuckleScript consumes the untyped Lambda IR using a multi-pass ..",
     "...and outputs fast, idiomatic JavaScript instead of native or bytecode!"
   |];
-  let steps = ReasonReact.arrayToElement (
-    Js.Array.mapi
-      (
-        fun phase i => {
-          let title = ReasonReact.stringToElement titles.(i);
-          let style =
-            phase === ReasonML || phase === BuckleScript ?
-              activeStepBlockStyle : stepBlockStyle;
-          let descriptionColor =
-            phase === ReasonML || phase == BuckleScript ? "#333333" : "#CCCCCC";
-          <Layout>
-            <Fill> <div style> title </div> </Fill>
-            <Fill>
-              <Text textSize="30px" padding="6px" textColor=descriptionColor>
-                (ReasonReact.stringToElement descriptions.(i))
-              </Text>
-            </Fill>
-          </Layout>
-        }
-      )
-      sequence
-  );
-  <div>
-    reasonLogo
-    buckleScriptLogo
-    steps
-  </div>
+  let steps =
+    ReasonReact.arrayToElement (
+      Js.Array.mapi
+        (
+          fun phase i => {
+            let title = ReasonReact.stringToElement titles.(i);
+            let style =
+              phase === ReasonML || phase === BuckleScript ? activeStepBlockStyle : stepBlockStyle;
+            let descriptionColor =
+              phase === ReasonML || phase == BuckleScript ? "#333333" : "#CCCCCC";
+            <Layout>
+              <Fill> <div style> title </div> </Fill>
+              <Fill>
+                <Text textSize="30px" padding="6px" textColor=descriptionColor>
+                  (ReasonReact.stringToElement descriptions.(i))
+                </Text>
+              </Fill>
+            </Layout>
+          }
+        )
+        sequence
+    );
+  <div> reasonLogo buckleScriptLogo steps </div>
 };
 
 let renderSequence step => {
