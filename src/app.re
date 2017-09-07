@@ -5,6 +5,7 @@ let colors = {"primary": "white", "secondary": "#1F2022", "tertiary": "#db4d3f"}
 let fonts = {"primary": "Montserrat", "secondary": "Helvetica"};
 
 let theme = Theme.create colors fonts;
+
 let make _children => {
   ...component,
   render: fun _self =>
@@ -12,11 +13,13 @@ let make _children => {
       <Typeface googleFont="Roboto Mono" />
       <Deck theme>
         (Introduction.make ())
-        (GoodThings.make ())
         (SoHotRightNow.make ())
         (Pitch.make ())
         <Compiler />
         (Modules.make ())
+        (ModulesExample.make ())
+        (Ffi.make ())
+        (Tooling.make ())
         (PatternMatchingVariants.make ())
         <GettingStarted />
         (TheEnd.make ())
@@ -24,6 +27,7 @@ let make _children => {
         (ReactIntro.make ())
         (ComponentTemplate.make ())
         (StatelessComponent.make ())
+        (ReducerComponents.make ())
         <StartingReasonReactProject />
       </Deck>
     </div>

@@ -7,24 +7,26 @@ type color =
   | Other
 |js};
 
-let patternMatching = {js|type schoolPerson = \n  Teacher \n| Director \n| Student string;
-  
-let greeting =
-  switch stranger {
+let patternMatching = {js|type schoolPerson = Teacher \n| Director \n| Student string;
+
+let stranger = Student "Kim";
+
+let greeting = switch stranger {
   | Teacher => "Hey professor!"
   | Director => "Hello director."
-  | Student "Richard" => "Still here Ricky?"
-  | Student anyOtherName => "Hey, " ^ anyOtherName ^ "."
+  | Student "Richard" => "Aye Ricky"
+  | Student name => "Hey, " ^ name ^ "."
   };
 |js};
-let patternMatchingError = {js|type schoolPerson = \n  Teacher \n| Director \n| Student string;
+let patternMatchingError = {js|type schoolPerson = Teacher \n| Director \n| Student string;
   
-let greeting =
-  switch stranger {
+let stranger = Student "Kim";
+
+let greeting = switch stranger {
   | Teacher => "Hey professor!"
   /* | Director => "Hello director." */
-  | Student "Richard" => "Still here Ricky?"
-  | Student anyOtherName => "Hey, " ^ anyOtherName ^ "."
+  | Student "Richard" => "Aye Ricky"
+  | Student name => "Hey, " ^ name ^ "."
   };
 |js};
 

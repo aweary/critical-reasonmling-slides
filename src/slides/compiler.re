@@ -1,47 +1,209 @@
-/* Alias Text before the Bs_webapi.Dom open nukes it */
-module Text' = Text;
+external eventToKeyboardEvent : Dom.event => Bs_webapi.Dom.KeyboardEvent.t = "%identity";
 
-open Bs_webapi.Dom;
+let bind reduce action => reduce (fun _ => action);
 
-type actions =
-  | StepSlideForward
-  | StepSlideBack;
+type phase =
+  | Overview
+  | SourceCode
+  | UntypedAST
+  | TypedAST
+  | LambdaIR
+  | Bytecode
+  | ReasonML
+  | BuckleScript;
 
-type state = {
-  step: int,
-  listener: ref (option (Dom.event => unit))
-};
+let sequence = [|
+  Overview,
+  SourceCode,
+  UntypedAST,
+  TypedAST,
+  LambdaIR,
+  Bytecode,
+  ReasonML,
+  BuckleScript
+|];
 
-external eventToKeyboardEvent : Dom.event => KeyboardEvent.t = "%identity";
+type state = {step: int};
 
-let component = ReasonReact.reducerComponent "CompilerSteps";
+type action =
+  | StepForward
+  | StepBackward;
+
+let str = ReasonReact.stringToElement;
 
 let stepBlockStyle =
-  ReactDOMRe.Style.make
-    backgroundColor::"grey"
-    color::"white"
-    padding::"20px"
-    margin::"10px"
-    borderRadius::"10px"
-    transitionDuration::"250ms"
-    ();
+ReactDOMRe.Style.make
+  backgroundColor::"grey" color::"white" padding::"20px" margin::"10px" borderRadius::"10px" ();
 
 let activeStepBlockStyle =
-  ReactDOMRe.Style.combine stepBlockStyle (ReactDOMRe.Style.make backgroundColor::"#03a9f4" ());
+ReactDOMRe.Style.combine stepBlockStyle (ReactDOMRe.Style.make backgroundColor::"#03a9f4" ());
 
-let steps = [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "Bytecode"|];
 
-let descriptions = [|
-  "Take some OCaml source Code",
-  "Do some parsing, lexing and preprocessing\nto get an untyped AST of the source Code",
-  "Perform type inference and validation to get\na type-annotated version of the AST",
-  "Transform that typed AST into an untyped\nIR in the form of s-expressions",
-  "Do a lot of hand waving and compile the Lambda\nIR to bytecode or native"
-|];
+let reasonLogo =
+  <img
+    style=(ReactDOMRe.Style.make position::"absolute" top::"143px" left::"-120px" width::"150px" ())
+    src=Assets.reasonLogo
+  />;
+
+let buckleScriptLogo =
+  <img
+    style=(ReactDOMRe.Style.make position::"absolute" top::"406px" left::"-120px" width::"150px" ())
+    src=Assets.reasonLogo
+  />;
+
+let renderOverview () => {
+  let sequence = [|SourceCode, UntypedAST, TypedAST, LambdaIR, Bytecode|];
+  let titles = [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "Bytecode"|];
+  let descriptions = [|
+    "Take some OCaml source Code",
+    "Do some parsing, lexing and preprocessing\nto get an untyped AST of the source Code",
+    "Perform type inference and validation to get\na type-annotated version of the AST",
+    "Transform that typed AST into an untyped\nIR in the form of s-expressions",
+    "Do a lot of hand waving and compile the Lambda\nIR to bytecode or native"
+  |];
+  ReasonReact.arrayToElement (
+    Js.Array.mapi
+      (
+        fun _ i => {
+          let title = ReasonReact.stringToElement titles.(i);
+          <Layout>
+            <Fill> <div style=activeStepBlockStyle> title </div> </Fill>
+            <Fill>
+              <Text textSize="30px" padding="6px" textColor="#333333">
+                (ReasonReact.stringToElement descriptions.(i))
+              </Text>
+            </Fill>
+          </Layout>
+        }
+      )
+      sequence
+  )
+};
+let renderStandardSequence active => {
+  let sequence = [|SourceCode, UntypedAST, TypedAST, LambdaIR, Bytecode|];
+  let titles = [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "Bytecode"|];
+  let descriptions = [|
+    "Take some OCaml source Code",
+    "Do some parsing, lexing and preprocessing\nto get an untyped AST of the source Code",
+    "Perform type inference and validation to get\na type-annotated version of the AST",
+    "Transform that typed AST into an untyped\nIR in the form of s-expressions",
+    "Do a lot of hand waving and compile the Lambda\nIR to bytecode or native"
+  |];
+  ReasonReact.arrayToElement (
+    Js.Array.mapi
+      (
+        fun phase i => {
+          let title = ReasonReact.stringToElement titles.(i);
+          let style = phase === active ? activeStepBlockStyle : stepBlockStyle;
+          let descriptionColor = phase === active ? "#333333" : "#CCCCCC";
+          <Layout>
+            <Fill> <div style> title </div> </Fill>
+            <Fill>
+              <Text textSize="30px" padding="6px" textColor=descriptionColor>
+                (ReasonReact.stringToElement descriptions.(i))
+              </Text>
+            </Fill>
+          </Layout>
+        }
+      )
+      sequence
+  )
+};
+
+let renderReasonMLStep () => {
+  let sequence = [|SourceCode, ReasonML, TypedAST, LambdaIR, Bytecode|];
+  let titles = [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "Bytecode"|];
+  let descriptions = [|
+    "Take some OCaml source Code",
+    "ReasonML provides a forked parser and lexer, with some preprocessing utilities, implementing a new syntax",
+    "Perform type inference and validation to get\na type-annotated version of the AST",
+    "Transform that typed AST into an untyped\nIR in the form of s-expressions",
+    "Do a lot of hand waving and compile the Lambda\nIR to bytecode or native"
+  |];
+  let steps =
+    ReasonReact.arrayToElement (
+      Js.Array.mapi
+        (
+          fun phase i => {
+            let title = ReasonReact.stringToElement titles.(i);
+            let style =
+              phase === ReasonML ? activeStepBlockStyle : stepBlockStyle;
+            let descriptionColor = phase === ReasonML ? "#333333" : "#CCCCCC";
+            <Layout>
+              <Fill> <div style> title </div> </Fill>
+              <Fill>
+                <Text textSize="30px" padding="6px" textColor=descriptionColor>
+                  (ReasonReact.stringToElement descriptions.(i))
+                </Text>
+              </Fill>
+            </Layout>
+          }
+        )
+        sequence
+    );
+  <div> reasonLogo steps </div>
+};
+
+let renderBuckleScriptStep () => {
+  let sequence = [|SourceCode, ReasonML, TypedAST, BuckleScript, BuckleScript|];
+  let titles = [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "JavaScript"|];
+  let descriptions = [|
+    "Take some OCaml source Code",
+    "ReasonML provides a forked parser and lexer, with some preprocessing utilities, implementing a new syntax",
+    "Perform type inference and validation to get\na type-annotated version of the AST",
+    "BuckleScript consumes the untyped Lambda IR using a multi-pass ..",
+    "...and outputs fast, idiomatic JavaScript instead of native or bytecode!"
+  |];
+  let steps = ReasonReact.arrayToElement (
+    Js.Array.mapi
+      (
+        fun phase i => {
+          let title = ReasonReact.stringToElement titles.(i);
+          let style =
+            phase === ReasonML || phase === BuckleScript ?
+              activeStepBlockStyle : stepBlockStyle;
+          let descriptionColor =
+            phase === ReasonML || phase == BuckleScript ? "#333333" : "#CCCCCC";
+          <Layout>
+            <Fill> <div style> title </div> </Fill>
+            <Fill>
+              <Text textSize="30px" padding="6px" textColor=descriptionColor>
+                (ReasonReact.stringToElement descriptions.(i))
+              </Text>
+            </Fill>
+          </Layout>
+        }
+      )
+      sequence
+  );
+  <div>
+    reasonLogo
+    buckleScriptLogo
+    steps
+  </div>
+};
+
+let renderSequence step => {
+  let step = sequence.(step);
+  switch step {
+  | Overview => renderOverview ()
+  | SourceCode
+  | UntypedAST
+  | TypedAST
+  | LambdaIR
+  | Bytecode => renderStandardSequence step
+  | ReasonML => renderReasonMLStep ()
+  | BuckleScript => renderBuckleScriptStep ()
+  }
+};
+
+let component = ReasonReact.reducerComponent "CompilerPhases";
+
+let keydownListener = ref None;
 
 let handleKeyDown ::onArrowDown ::onArrowUp event => {
   let event = eventToKeyboardEvent event;
-  switch (KeyboardEvent.code event) {
+  switch (Bs_webapi.Dom.KeyboardEvent.code event) {
   /* Down Arrow */
   | "ArrowDown" => onArrowDown ()
   /* Up Arrow */
@@ -51,58 +213,41 @@ let handleKeyDown ::onArrowDown ::onArrowUp event => {
   }
 };
 
-let renderSteps activeIndex element index => {
-  /* The first step renders all the steps as active */
-  let isActive = activeIndex == 0 || activeIndex == index + 1;
-  let blockStyle = isActive ? activeStepBlockStyle : stepBlockStyle;
-  let descriptionColor = isActive ? "#333333" : "#CCCCCC";
-  let description =
-    activeIndex == 0 ?
-      ReasonReact.nullElement :
-      <Fill>
-        <Text' textSize="25px" padding="6px" textColor=descriptionColor>
-          (ReasonReact.stringToElement descriptions.(index))
-        </Text'>
-      </Fill>;
-  <Layout> <Fill> <div style=blockStyle> element </div> </Fill> description </Layout>
-};
-
 let make _children => {
   ...component,
-  initialState: fun () => {step: 0, listener: ref (None: option (Dom.event => unit))},
+  initialState: fun _self => {step: 0},
   reducer: fun action state =>
     switch action {
-    | StepSlideForward =>
-      if (state.step < Js.Array.length steps) {
-        ReasonReact.Update {...state, step: state.step + 1}
+    | StepForward =>
+      Js.log state;
+      Js.log (Js.Array.length sequence);
+      Js.log sequence;
+      if (state.step < Js.Array.length sequence - 1) {
+        ReasonReact.Update {step: state.step + 1}
       } else {
         ReasonReact.NoUpdate
       }
-    | StepSlideBack =>
-      /* Only step backwards if there is a previous slide */
+    | StepBackward =>
       if (state.step > 0) {
-        ReasonReact.Update {...state, step: state.step - 1}
+        ReasonReact.Update {step: state.step - 1}
       } else {
         ReasonReact.NoUpdate
       }
     },
-  didMount: fun {state, reduce} => {
-    let handleArrowDown = reduce (fun _ => StepSlideForward);
-    let handleArrowUp = reduce (fun _ => StepSlideBack);
-    let listener = handleKeyDown onArrowDown::handleArrowDown onArrowUp::handleArrowUp;
-    state.listener := Some listener;
-    Document.addEventListener "keydown" listener document;
+  didMount: fun {reduce} => {
+    let listener =
+      handleKeyDown onArrowDown::(bind reduce StepForward) onArrowUp::(bind reduce StepBackward);
+    Bs_webapi.Dom.(Document.addEventListener "keydown" listener document);
+    keydownListener := Some listener;
     ReasonReact.NoUpdate
   },
-  willUnmount: fun {state} => {
-    let listener = Js.Option.getExn !state.listener;
-    Document.removeEventListener "keydown" listener document
-  },
+  willUnmount: fun _self =>
+    switch !keydownListener {
+    | Some listener => Bs_webapi.Dom.(Document.removeEventListener "keydown" listener document)
+    | None => /* Who cares */ ()
+    },
   render: fun self => {
-    let title = ReasonReact.stringToElement ("Compiler Step #" ^ string_of_int self.state.step);
-    let steps =
-      steps |> Js.Array.map ReasonReact.stringToElement |>
-      Js.Array.mapi (renderSteps self.state.step) |> ReasonReact.arrayToElement;
-    <Slide id="compiler-steps"> <h1> title </h1> steps </Slide>
+    let sequence = renderSequence self.state.step;
+    <Slide id="ocaml-compiler-phases"> sequence </Slide>
   }
 };

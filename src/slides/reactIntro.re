@@ -1,8 +1,8 @@
 let ranges: Js.Array.t CodeSlide.range = [|
-  {"loc": [|0, 1000|], "title": "Building a Stateless Component."},
-  {"loc": [|0, 1|], "title": "Create the component spec"},
-  {"loc": [|2, 11|], "title": "Define the make function"},
-  {"loc": [|4, 10|], "title": "Override the default implementation"}
+  {"loc": [|0, 1000|]},
+  {"loc": [|0, 1|]},
+  {"loc": [|2, 11|]},
+  {"loc": [|4, 10|]}
 |];
 
 let make () =>

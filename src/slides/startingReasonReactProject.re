@@ -11,7 +11,7 @@ let prompt ::dir="~" message =>
 let color hex text => <span style=(ReactDOMRe.Style.make color::hex ())> (str text) </span>;
 
 let output = [|
-  prompt "yarn create react-app my-app -- --scripts-version reason-scripts",
+  prompt "create-react-app my-app -- --scripts-version reason-scripts",
   <span>
     (str "\n")
     (str "Creating a new React app in ")
@@ -46,13 +46,20 @@ let make _children => {
   ...component,
   render: fun _self =>
     <Slide id="reason-scripts">
-      <Heading size=5> (str "Starting a ReasonReact Project") </Heading>
-      <br />
-      <Link href="https://github.com/reasonml-community/reason-scripts">
-        (ReasonReact.stringToElement "https://github.com/reasonml-community/reason-scripts")
-      </Link>
-      <br />
-      <br />
-      <Terminal title="reason-4-lyfe: ~(zsh)" output />
+    <style>
+      (ReasonReact.stringToElement {js|
+        code[class*="language-"], pre[class*="language-"] {
+          font-size: 45px !important;
+        }  
+      |js})
+    </style>
+    <Heading size=3> (str "Starting a ReasonReact Project") </Heading>
+    <br />
+    <Link href="https://github.com/reasonml-community/reason-scripts">
+      (str "https://github.com/reasonml-community/reason-scripts")
+    </Link>
+    <Code source="/* Use create-react-app!*/\ncreate-react-app my-app --\n--scripts-version\nreason-scripts" />
+    /* <Heading size=5> (str "Adding to an Existing Project") </Heading>
+    <Code source="npm install --save-dev bs-loader" /> */
     </Slide>
 };
