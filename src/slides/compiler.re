@@ -38,6 +38,9 @@ let stepBlockStyle =
 let activeStepBlockStyle =
   ReactDOMRe.Style.combine stepBlockStyle (ReactDOMRe.Style.make backgroundColor::"#03a9f4" ());
 
+let makeActiveStepBlockStyle backgroundColor =>
+ReactDOMRe.Style.combine stepBlockStyle (ReactDOMRe.Style.make backgroundColor::backgroundColor ());
+
 let reasonLogo =
   <img
     style=(
@@ -51,7 +54,7 @@ let buckleScriptLogo =
     style=(
       ReactDOMRe.Style.make position::"absolute" top::"406px" left::"-120px" width::"150px" ()
     )
-    src=Assets.reasonLogo
+    src=Assets.buckleScriptLogo
   />;
 
 let renderOverview () => {
@@ -90,7 +93,7 @@ let renderStandardSequence active => {
       (
         fun phase i => {
           let title = ReasonReact.stringToElement titles.(i);
-          let style = phase === active ? activeStepBlockStyle : stepBlockStyle;
+          let style = phase === active ? (makeActiveStepBlockStyle "#03a9f4") : stepBlockStyle;
           let descriptionColor = phase === active ? "#333333" : "#CCCCCC";
           <Layout>
             <Fill> <div style> title </div> </Fill>
@@ -122,7 +125,7 @@ let renderReasonMLStep () => {
         (
           fun phase i => {
             let title = ReasonReact.stringToElement titles.(i);
-            let style = phase === ReasonML ? activeStepBlockStyle : stepBlockStyle;
+            let style = phase === ReasonML ? (makeActiveStepBlockStyle Theme.red) : stepBlockStyle;
             let descriptionColor = phase === ReasonML ? "#333333" : "#CCCCCC";
             <Layout>
               <Fill> <div style> title </div> </Fill>
@@ -146,7 +149,7 @@ let renderBuckleScriptStep () => {
     "Take some OCaml source Code",
     "ReasonML provides a forked parser and lexer, with some preprocessing utilities, implementing a new syntax",
     "Perform type inference and validation to get\na type-annotated version of the AST",
-    "BuckleScript consumes the untyped Lambda IR using a multi-pass ..",
+    "BuckleScript consumes the untyped Lambda IR using a multi-pass compiler...",
     "...and outputs fast, idiomatic JavaScript instead of native or bytecode!"
   |];
   let steps =
@@ -155,8 +158,13 @@ let renderBuckleScriptStep () => {
         (
           fun phase i => {
             let title = ReasonReact.stringToElement titles.(i);
-            let style =
-              phase === ReasonML || phase === BuckleScript ? activeStepBlockStyle : stepBlockStyle;
+            let style = if (phase === BuckleScript) {
+              makeActiveStepBlockStyle Theme.green
+            } else if (phase === ReasonML) {
+              makeActiveStepBlockStyle Theme.red
+            } else {
+              stepBlockStyle
+            };
             let descriptionColor =
               phase === ReasonML || phase == BuckleScript ? "#333333" : "#CCCCCC";
             <Layout>
@@ -239,6 +247,15 @@ let make _children => {
     },
   render: fun self => {
     let sequence = renderSequence self.state.step;
-    <Slide id="ocaml-compiler-phases"> sequence </Slide>
+    <div>
+    <style>
+      (ReasonReact.stringToElement {js|
+        .spectacle-slide {
+          overflow: visible !important;
+        }
+      |js})
+    </style>
+    <Slide maxWidth="900px" id="ocaml-compiler-phases"> sequence </Slide>
+    </div>
   }
 };

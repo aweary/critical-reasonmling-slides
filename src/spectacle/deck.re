@@ -7,5 +7,5 @@ let make
     children =>
   ReasonReact.wrapJsForReason
     reactClass::deck
-    props::{"theme": theme, "controls": Js.Boolean.to_js_boolean controls, "progress": "none"}
+    props::{"theme": theme, "controls": Js.Boolean.to_js_boolean controls, "progress": "none", "contentWidth": 1300 }
     children;

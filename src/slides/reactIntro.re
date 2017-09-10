@@ -11,21 +11,32 @@ let make () =>
       (ReasonReact.stringToElement "Building Components with ")
     </Heading>
     <Heading size=3>
-      (CodeFormat.color "red" "ReasonReact")
+      (CodeFormat.color Theme.red "ReasonReact")
     </Heading>
+    <br />
+    <List_ textSize="35px">
     <Appear>
-      <Text>
+      <ListItem>
         (ReasonReact.stringToElement "Create the component template.")
-      </Text>
+      </ListItem>
     </Appear>
     <Appear>
-      <Text>
-        (ReasonReact.stringToElement "Define the make method.")
-      </Text>
+      <ListItem>
+        (ReasonReact.stringToElement "Define a ")
+        <code>
+          (ReasonReact.stringToElement "make")
+        </code>
+        (ReasonReact.stringToElement " function.")
+      </ListItem>
     </Appear>
     <Appear>
-      <Text>
-        (ReasonReact.stringToElement "Implement the required methods.")
-      </Text>
+      <ListItem>
+        (ReasonReact.stringToElement "Define ")
+        <code>
+          (ReasonReact.stringToElement "render")
+        </code>
+        (ReasonReact.stringToElement " and other lifecycle methods.")
+      </ListItem>
     </Appear>
+    </List_>
   </Slide>

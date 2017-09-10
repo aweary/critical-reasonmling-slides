@@ -1,6 +1,6 @@
 let component = ReasonReact.statelessComponent "App";
 
-let colors = {"primary": "white", "secondary": "#1F2022", "tertiary": "#db4d3f"};
+let colors = {"primary": "white", "secondary": Theme.black, "tertiary": Theme.red};
 
 let fonts = {"primary": "Montserrat", "secondary": "Helvetica"};
 
@@ -13,18 +13,23 @@ let make _children => {
       <Typeface googleFont="Roboto Mono" />
       <Deck theme>
         (Introduction.make ())
+        (Formidable.make ())
         (SoHotRightNow.make ())
         (Pitch.make ())
         <Compiler />
         (ReasonLogo.make ())
-        (BindingsAndScope.make ())
-        (TypeSystem.make ())
+        /* (BindingsAndScope.make ()) */
+        /* (TypeSystem.make ()) */
+        (Basics.make ())
         (PatternMatchingVariants.make ())
         (Modules.make ())
-        (FilesAsModules.make ())
+        /* (FilesAsModules.make ()) */
         (ModulesExample.make ())
         (Tooling.make ())
-        (Ffi.make ())
+        (ReasonTools.make ())
+        (Refmt.make ())
+        (Repl.make ())
+        /* (Ffi.make ()) */
         <GettingStarted />
         (TheEnd.make ())
         (ReasonReactIntro.make ())
@@ -32,7 +37,9 @@ let make _children => {
         (ComponentTemplate.make ())
         (StatelessComponent.make ())
         (ReducerComponents.make ())
+        (ReducerComponentExample.make ())
         <StartingReasonReactProject />
+        (Thanks.make ())
       </Deck>
     </div>
 };
