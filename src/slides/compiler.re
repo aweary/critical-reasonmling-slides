@@ -68,7 +68,7 @@ let renderOverview = () => {
     ReasonReact.arrayToElement(
       Js.Array.map(
         (title) =>
-          <Layout>
+          <Layout key=title>
             <Fill>
               <div style=activeStepBlockStyle> (ReasonReact.stringToElement(title)) </div>
             </Fill>
@@ -99,7 +99,7 @@ let renderStandardSequence = (active) => {
         let title = ReasonReact.stringToElement(titles[i]);
         let style = phase === active ? makeActiveStepBlockStyle("#03a9f4") : stepBlockStyle;
         let descriptionColor = phase === active ? "#333333" : "#CCCCCC";
-        <Layout>
+        <Layout key=titles[i]>
           <Fill> <div style> title </div> </Fill>
           <Fill>
             <Text textSize="30px" padding="6px" textColor=descriptionColor>
@@ -130,7 +130,7 @@ let renderReasonMLStep = () => {
           let title = ReasonReact.stringToElement(titles[i]);
           let style = phase === ReasonML ? makeActiveStepBlockStyle(Theme.red) : stepBlockStyle;
           let descriptionColor = phase === ReasonML ? "#333333" : "#CCCCCC";
-          <Layout>
+          <Layout key=titles[i]>
             <Fill> <div style> title </div> </Fill>
             <Fill>
               <Text textSize="30px" padding="6px" textColor=descriptionColor>
@@ -170,7 +170,7 @@ let renderBuckleScriptStep = () => {
             };
           let descriptionColor =
             phase === ReasonML || phase == BuckleScript ? "#333333" : "#CCCCCC";
-          <Layout>
+          <Layout key=titles[i]>
             <Fill> <div style> title </div> </Fill>
             <Fill>
               <Text textSize="30px" padding="6px" textColor=descriptionColor>
@@ -255,10 +255,10 @@ let make = (_children) => {
         (
           ReasonReact.stringToElement(
             {js|
-        .spectacle-slide {
-          overflow: visible !important;
-        }
-      |js}
+              .spectacle-slide {
+                overflow: visible !important;
+              }
+            |js}
           )
         )
       </style>
