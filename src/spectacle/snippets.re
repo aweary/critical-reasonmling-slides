@@ -18,8 +18,9 @@ let greeting = switch stranger {
   | Student name => "Hey, " ^ name ^ "."
   };
 |js};
+
 let patternMatchingError = {js|type schoolPerson = Teacher \n| Director \n| Student string;
-  
+
 let stranger = Student "Kim";
 
 let greeting = switch stranger {
@@ -41,6 +42,7 @@ let make ::name _children => {
     </button>
   }
 };|js};
+
 let reducerComponent = {js|type action = Add | Subtract;
 
 type state = {count: int};

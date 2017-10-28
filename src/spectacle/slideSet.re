@@ -1,4 +1,4 @@
-external slide : ReasonReact.reactClass = "SlideSet" [@@bs.module "spectacle"];
+[@bs.module "spectacle"] external slide : ReasonReact.reactClass = "SlideSet";
 
-let make children =>
-  ReasonReact.wrapJsForReason reactClass::slide props::(Js.Obj.empty ()) children;
+let make = (children) =>
+  ReasonReact.wrapJsForReason(~reactClass=slide, ~props=Js.Obj.empty(), children);

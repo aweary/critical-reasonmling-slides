@@ -1,8 +1,5 @@
 /* open Types; */
-external typeface : ReasonReact.reactClass = "Typeface" [@@bs.module "spectacle"];
+[@bs.module "spectacle"] external typeface : ReasonReact.reactClass = "Typeface";
 
-let make googleFont::(googleFont: string) children =>
-  ReasonReact.wrapJsForReason
-    reactClass::typeface
-    props::{ "googleFont": googleFont }
-    children;
+let make = (~googleFont: string, children) =>
+  ReasonReact.wrapJsForReason(~reactClass=typeface, ~props={"googleFont": googleFont}, children);

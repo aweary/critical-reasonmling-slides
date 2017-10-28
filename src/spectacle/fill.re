@@ -1,7 +1,4 @@
-external fill : ReasonReact.reactClass = "Fill" [@@bs.module "spectacle"];
+[@bs.module "spectacle"] external fill : ReasonReact.reactClass = "Fill";
 
-let make children =>
-  ReasonReact.wrapJsForReason
-    reactClass::fill
-    props::(Js.Obj.empty ())
-    children;
+let make = (children) =>
+  ReasonReact.wrapJsForReason(~reactClass=fill, ~props=Js.Obj.empty(), children);

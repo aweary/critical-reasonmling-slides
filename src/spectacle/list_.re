@@ -1,7 +1,4 @@
-external list : ReasonReact.reactClass = "List" [@@bs.module "spectacle"];
+[@bs.module "spectacle"] external list : ReasonReact.reactClass = "List";
 
-let make textSize::(textSize: string)="" children =>
-  ReasonReact.wrapJsForReason
-    reactClass::list
-    props::({ "textSize": textSize })
-    children;
+let make = (~textSize: string="", children) =>
+  ReasonReact.wrapJsForReason(~reactClass=list, ~props={"textSize": textSize}, children);

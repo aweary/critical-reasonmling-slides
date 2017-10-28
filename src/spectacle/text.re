@@ -1,12 +1,15 @@
-external text : ReasonReact.reactClass = "Text" [@@bs.module "spectacle"];
+[@bs.module "spectacle"] external text : ReasonReact.reactClass = "Text";
 
-let make
-    textSize::(textSize: string)=""
-    textColor::(textColor: string)=""
-    padding::(padding: string)=""
-    fit::(fit: Js.boolean)=Js.false_
-    children =>
-  ReasonReact.wrapJsForReason
-    reactClass::text
-    props::{"fit": fit, "textSize": textSize, "padding": padding, "textColor": textColor}
-    children;
+let make =
+    (
+      ~textSize: string="",
+      ~textColor: string="",
+      ~padding: string="",
+      ~fit: Js.boolean=Js.false_,
+      children
+    ) =>
+  ReasonReact.wrapJsForReason(
+    ~reactClass=text,
+    ~props={"fit": fit, "textSize": textSize, "padding": padding, "textColor": textColor},
+    children
+  );
