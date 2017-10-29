@@ -7,38 +7,50 @@ type color =
   | Other
 |js};
 
-let patternMatching = {js|type schoolPerson = Teacher \n| Director \n| Student string;
+let patternMatching = {js|type schoolPerson = Teacher \n| Director \n| Student(string);
 
-let stranger = Student "Kim";
+let stranger = Student("Kim");
 
 let greeting = switch stranger {
   | Teacher => "Hey professor!"
   | Director => "Hello director."
-  | Student "Richard" => "Aye Ricky"
-  | Student name => "Hey, " ^ name ^ "."
+  | Student("Richard") => "Aye Ricky"
+  | Student(name) => "Hey, " ++ name ++ "."
   };
 |js};
 
-let patternMatchingError = {js|type schoolPerson = Teacher \n| Director \n| Student string;
+type schoolPerson = Teacher | Director | Student(string);
 
-let stranger = Student "Kim";
+let stranger = Student("Kim");
+
+let greeting = switch stranger {
+  | Teacher => "Hey professor!"
+  | Director => "Hello director."
+  | Student("Richard") => "Aye Ricky"
+  | Student(name) => "Hey, " ++ name ++ "."
+  };
+
+
+let patternMatchingError = {js|type schoolPerson = Teacher \n| Director \n| Student(string);
+
+let stranger = Student("Kim");
 
 let greeting = switch stranger {
   | Teacher => "Hey professor!"
   /* | Director => "Hello director." */
-  | Student "Richard" => "Aye Ricky"
-  | Student name => "Hey, " ^ name ^ "."
+  | Student("Richard") => "Aye Ricky"
+  | Student(name) => "Hey, " ++ name ++ "."
   };
 |js};
 
-let reactIntro = {js|let component = ReasonReact.statelessComponent "Greeting";
+let reactIntro = {js|let component = ReasonReact.statelessComponent("Greeting");
 
-let make ::name _children => {
+let make = (~name, _children) => {
   ...component,
-  render: fun self => {
-    let greeting = ("Hello, " ^ name);
+  render: _self => {
+    let greeting = ("Hello, " ++ name);
     <button>
-      (ReasonReact.stringToElement greeting)
+      (ReasonReact.stringToElement(greeting))
     </button>
   }
 };|js};
@@ -47,29 +59,29 @@ let reducerComponent = {js|type action = Add | Subtract;
 
 type state = {count: int};
 
-let component = ReasonReact.reducerComponent "Counter";
+let component = ReasonReact.reducerComponent("Counter");
 
-let make _children => {
+let make = _children => {
   ...component,
-  initialState: fun () => {count: 0},
-  reducer: fun action state => {
+  initialState: () => {count: 0},
+  reducer: (action, state) => {
     let count = state.count;
     switch action {
-    | Add => ReasonReact.Update {count: count + 1}
-    | Subtract => ReasonReact.Update {count: count - 1}
+    | Add => ReasonReact.Update({count: count + 1})
+    | Subtract => ReasonReact.Update({count: count - 1})
     }
-  }
-  render: fun self => {
-    let count = string_of_int self.state.count;
-    let increment = self.reduce (fun _event => Add);
-    let decrement = self.reduce (fun _event => Subtract);
+  },
+  render: self => {
+    let count = string_of_int(self.state.count);
+    let increment = self.reduce(_event => Add);
+    let decrement = self.reduce(_event => Subtract);
     <div>
-      (ReasonReact.stringToElement ("Count: #" ^ count))
+      (ReasonReact.stringToElement("Count: #" ++ count))
       <button onClick=increment>
-        (ReasonReact.stringToElement "+")
+        (ReasonReact.stringToElement("+"))
       </button>
       <button onClick=decrement>
-        (ReasonReact.stringToElement "-")
+        (ReasonReact.stringToElement("-"))
       </button>
     </div>
   }
@@ -80,13 +92,13 @@ let basics = {js|
   let user = {
     let firstName = "Bobby";
     let lastName = "Tables";
-    firstName ^ " " ^ lastName
+    firstName ++ " " ++ lastName
   };
   /* Define a function `greet`  */
-  let greet ::greeting name => {
-    greeting ^ ", " ^ name ^ "!"
+  let greet = (~greeting, name) => {
+    greeting ++ ", " ++ name ++ "!"
   };
   /* Call the `greet` function */
-  greet greeting::"Hello" user;
-  /* "Hello, Bobby Tables! */
+  greet(~greeting="Hello", user);
+  /* "Hello, Bobby Tables!" */
 |js};
