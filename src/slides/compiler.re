@@ -1,6 +1,6 @@
 external eventToKeyboardEvent : Dom.event => Bs_webapi.Dom.KeyboardEvent.t = "%identity";
 
-let bind reduce action => reduce (fun _ => action);
+let bind = (reduce, action) => reduce((_) => action);
 
 type phase =
   | Overview
@@ -32,19 +32,25 @@ type action =
 let str = ReasonReact.stringToElement;
 
 let stepBlockStyle =
-  ReactDOMRe.Style.make
-    backgroundColor::"grey" color::"white" padding::"20px" margin::"10px" borderRadius::"10px" ();
+  ReactDOMRe.Style.make(
+    ~backgroundColor="grey",
+    ~color="white",
+    ~padding="20px",
+    ~margin="10px",
+    ~borderRadius="10px",
+    ()
+  );
 
 let activeStepBlockStyle =
-  ReactDOMRe.Style.combine stepBlockStyle (ReactDOMRe.Style.make backgroundColor::"#03a9f4" ());
+  ReactDOMRe.Style.combine(stepBlockStyle, ReactDOMRe.Style.make(~backgroundColor="#03a9f4", ()));
 
-let makeActiveStepBlockStyle backgroundColor =>
-ReactDOMRe.Style.combine stepBlockStyle (ReactDOMRe.Style.make backgroundColor::backgroundColor ());
+let makeActiveStepBlockStyle = (backgroundColor) =>
+  ReactDOMRe.Style.combine(stepBlockStyle, ReactDOMRe.Style.make(~backgroundColor, ()));
 
 let reasonLogo =
   <img
     style=(
-      ReactDOMRe.Style.make position::"absolute" top::"143px" left::"-120px" width::"150px" ()
+      ReactDOMRe.Style.make(~position="absolute", ~top="143px", ~left="-120px", ~width="150px", ())
     )
     src=Assets.reasonLogo
   />;
@@ -52,33 +58,32 @@ let reasonLogo =
 let buckleScriptLogo =
   <img
     style=(
-      ReactDOMRe.Style.make position::"absolute" top::"406px" left::"-120px" width::"150px" ()
+      ReactDOMRe.Style.make(~position="absolute", ~top="406px", ~left="-120px", ~width="150px", ())
     )
     src=Assets.buckleScriptLogo
   />;
 
-let renderOverview () => {
+let renderOverview = () => {
   let steps =
-    ReasonReact.arrayToElement (
-      Js.Array.map
-        (
-          fun title =>
-            <Layout>
-              <Fill>
-                <div style=activeStepBlockStyle> (ReasonReact.stringToElement title) </div>
-              </Fill>
-            </Layout>
-        )
+    ReasonReact.arrayToElement(
+      Js.Array.map(
+        (title) =>
+          <Layout key=title>
+            <Fill>
+              <div style=activeStepBlockStyle> (ReasonReact.stringToElement(title)) </div>
+            </Fill>
+          </Layout>,
         [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "Bytecode"|]
+      )
     );
   <div>
-    <Heading size=4> (ReasonReact.stringToElement "The OCaml Compiler") </Heading>
+    <Heading size=4> (ReasonReact.stringToElement("The OCaml Compiler")) </Heading>
     <br />
     steps
   </div>
 };
 
-let renderStandardSequence active => {
+let renderStandardSequence = (active) => {
   let sequence = [|SourceCode, UntypedAST, TypedAST, LambdaIR, Bytecode|];
   let titles = [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "Bytecode"|];
   let descriptions = [|
@@ -88,28 +93,27 @@ let renderStandardSequence active => {
     "Transform that typed AST into an untyped\nIR in the form of s-expressions",
     "Do a lot of hand waving and compile the Lambda\nIR to bytecode or native"
   |];
-  ReasonReact.arrayToElement (
-    Js.Array.mapi
-      (
-        fun phase i => {
-          let title = ReasonReact.stringToElement titles.(i);
-          let style = phase === active ? (makeActiveStepBlockStyle "#03a9f4") : stepBlockStyle;
-          let descriptionColor = phase === active ? "#333333" : "#CCCCCC";
-          <Layout>
-            <Fill> <div style> title </div> </Fill>
-            <Fill>
-              <Text textSize="30px" padding="6px" textColor=descriptionColor>
-                (ReasonReact.stringToElement descriptions.(i))
-              </Text>
-            </Fill>
-          </Layout>
-        }
-      )
+  ReasonReact.arrayToElement(
+    Js.Array.mapi(
+      (phase, i) => {
+        let title = ReasonReact.stringToElement(titles[i]);
+        let style = phase === active ? makeActiveStepBlockStyle("#03a9f4") : stepBlockStyle;
+        let descriptionColor = phase === active ? "#333333" : "#CCCCCC";
+        <Layout key=titles[i]>
+          <Fill> <div style> title </div> </Fill>
+          <Fill>
+            <Text textSize="30px" padding="6px" textColor=descriptionColor>
+              (ReasonReact.stringToElement(descriptions[i]))
+            </Text>
+          </Fill>
+        </Layout>
+      },
       sequence
+    )
   )
 };
 
-let renderReasonMLStep () => {
+let renderReasonMLStep = () => {
   let sequence = [|SourceCode, ReasonML, TypedAST, LambdaIR, Bytecode|];
   let titles = [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "Bytecode"|];
   let descriptions = [|
@@ -120,29 +124,28 @@ let renderReasonMLStep () => {
     "Do a lot of hand waving and compile the Lambda\nIR to bytecode or native"
   |];
   let steps =
-    ReasonReact.arrayToElement (
-      Js.Array.mapi
-        (
-          fun phase i => {
-            let title = ReasonReact.stringToElement titles.(i);
-            let style = phase === ReasonML ? (makeActiveStepBlockStyle Theme.red) : stepBlockStyle;
-            let descriptionColor = phase === ReasonML ? "#333333" : "#CCCCCC";
-            <Layout>
-              <Fill> <div style> title </div> </Fill>
-              <Fill>
-                <Text textSize="30px" padding="6px" textColor=descriptionColor>
-                  (ReasonReact.stringToElement descriptions.(i))
-                </Text>
-              </Fill>
-            </Layout>
-          }
-        )
+    ReasonReact.arrayToElement(
+      Js.Array.mapi(
+        (phase, i) => {
+          let title = ReasonReact.stringToElement(titles[i]);
+          let style = phase === ReasonML ? makeActiveStepBlockStyle(Theme.red) : stepBlockStyle;
+          let descriptionColor = phase === ReasonML ? "#333333" : "#CCCCCC";
+          <Layout key=titles[i]>
+            <Fill> <div style> title </div> </Fill>
+            <Fill>
+              <Text textSize="30px" padding="6px" textColor=descriptionColor>
+                (ReasonReact.stringToElement(descriptions[i]))
+              </Text>
+            </Fill>
+          </Layout>
+        },
         sequence
+      )
     );
   <div> reasonLogo steps </div>
 };
 
-let renderBuckleScriptStep () => {
+let renderBuckleScriptStep = () => {
   let sequence = [|SourceCode, ReasonML, TypedAST, BuckleScript, BuckleScript|];
   let titles = [|"Source Code", "Untyped AST", "Typed AST", "Lambda IR", "JavaScript"|];
   let descriptions = [|
@@ -153,109 +156,113 @@ let renderBuckleScriptStep () => {
     "...and outputs fast, idiomatic JavaScript instead of native or bytecode!"
   |];
   let steps =
-    ReasonReact.arrayToElement (
-      Js.Array.mapi
-        (
-          fun phase i => {
-            let title = ReasonReact.stringToElement titles.(i);
-            let style = if (phase === BuckleScript) {
-              makeActiveStepBlockStyle Theme.green
+    ReasonReact.arrayToElement(
+      Js.Array.mapi(
+        (phase, i) => {
+          let title = ReasonReact.stringToElement(titles[i]);
+          let style =
+            if (phase === BuckleScript) {
+              makeActiveStepBlockStyle(Theme.green)
             } else if (phase === ReasonML) {
-              makeActiveStepBlockStyle Theme.red
+              makeActiveStepBlockStyle(Theme.red)
             } else {
               stepBlockStyle
             };
-            let descriptionColor =
-              phase === ReasonML || phase == BuckleScript ? "#333333" : "#CCCCCC";
-            <Layout>
-              <Fill> <div style> title </div> </Fill>
-              <Fill>
-                <Text textSize="30px" padding="6px" textColor=descriptionColor>
-                  (ReasonReact.stringToElement descriptions.(i))
-                </Text>
-              </Fill>
-            </Layout>
-          }
-        )
+          let descriptionColor =
+            phase === ReasonML || phase == BuckleScript ? "#333333" : "#CCCCCC";
+          <Layout key=titles[i]>
+            <Fill> <div style> title </div> </Fill>
+            <Fill>
+              <Text textSize="30px" padding="6px" textColor=descriptionColor>
+                (ReasonReact.stringToElement(descriptions[i]))
+              </Text>
+            </Fill>
+          </Layout>
+        },
         sequence
+      )
     );
   <div> reasonLogo buckleScriptLogo steps </div>
 };
 
-let renderSequence step => {
-  let step = sequence.(step);
+let renderSequence = (step) => {
+  let step = sequence[step];
   switch step {
-  | Overview => renderOverview ()
+  | Overview => renderOverview()
   | SourceCode
   | UntypedAST
   | TypedAST
   | LambdaIR
-  | Bytecode => renderStandardSequence step
-  | ReasonML => renderReasonMLStep ()
-  | BuckleScript => renderBuckleScriptStep ()
+  | Bytecode => renderStandardSequence(step)
+  | ReasonML => renderReasonMLStep()
+  | BuckleScript => renderBuckleScriptStep()
   }
 };
 
-let component = ReasonReact.reducerComponent "CompilerPhases";
+let component = ReasonReact.reducerComponent("CompilerPhases");
 
-let keydownListener = ref None;
+let keydownListener = ref(None);
 
-let handleKeyDown ::onArrowDown ::onArrowUp event => {
-  let event = eventToKeyboardEvent event;
-  switch (Bs_webapi.Dom.KeyboardEvent.code event) {
+let handleKeyDown = (~onArrowDown, ~onArrowUp, event) => {
+  let event = eventToKeyboardEvent(event);
+  switch (Bs_webapi.Dom.KeyboardEvent.code(event)) {
   /* Down Arrow */
-  | "ArrowDown" => onArrowDown ()
+  | "ArrowDown" => onArrowDown()
   /* Up Arrow */
-  | "ArrowUp" => onArrowUp ()
+  | "ArrowUp" => onArrowUp()
   /* All other keys */
   | _ => ()
   }
 };
 
-let make _children => {
+let make = (_children) => {
   ...component,
-  initialState: fun _self => {step: 0},
-  reducer: fun action state =>
+  initialState: (_self) => {step: 0},
+  reducer: (action, state) =>
     switch action {
     | StepForward =>
-      Js.log state;
-      Js.log (Js.Array.length sequence);
-      Js.log sequence;
-      if (state.step < Js.Array.length sequence - 1) {
-        ReasonReact.Update {step: state.step + 1}
+      Js.log(state);
+      Js.log(Js.Array.length(sequence));
+      Js.log(sequence);
+      if (state.step < Js.Array.length(sequence) - 1) {
+        ReasonReact.Update({step: state.step + 1})
       } else {
         ReasonReact.NoUpdate
       }
     | StepBackward =>
       if (state.step > 0) {
-        ReasonReact.Update {step: state.step - 1}
+        ReasonReact.Update({step: state.step - 1})
       } else {
         ReasonReact.NoUpdate
       }
     },
-  didMount: fun {reduce} => {
+  didMount: ({reduce}) => {
     let listener =
-      handleKeyDown onArrowDown::(bind reduce StepForward) onArrowUp::(bind reduce StepBackward);
-    Bs_webapi.Dom.(Document.addEventListener "keydown" listener document);
-    keydownListener := Some listener;
+      handleKeyDown(~onArrowDown=bind(reduce, StepForward), ~onArrowUp=bind(reduce, StepBackward));
+    Bs_webapi.Dom.(Document.addEventListener("keydown", listener, document));
+    keydownListener := Some(listener);
     ReasonReact.NoUpdate
   },
-  willUnmount: fun _self =>
-    switch !keydownListener {
-    | Some listener => Bs_webapi.Dom.(Document.removeEventListener "keydown" listener document)
+  willUnmount: (_self) =>
+    switch keydownListener^ {
+    | Some(listener) => Bs_webapi.Dom.(Document.removeEventListener("keydown", listener, document))
     | None => /* Who cares */ ()
     },
-  render: fun self => {
-    let sequence = renderSequence self.state.step;
+  render: (self) => {
+    let sequence = renderSequence(self.state.step);
     <div>
-    <style>
-      (ReasonReact.stringToElement {js|
-        .spectacle-slide {
-          overflow: visible !important;
-        }
-      |js})
-    </style>
-    <Slide maxWidth="900px" id="ocaml-compiler-phases"> sequence </Slide>
+      <style>
+        (
+          ReasonReact.stringToElement(
+            {js|
+              .spectacle-slide {
+                overflow: visible !important;
+              }
+            |js}
+          )
+        )
+      </style>
+      <Slide maxWidth="900px" id="ocaml-compiler-phases"> sequence </Slide>
     </div>
   }
 };

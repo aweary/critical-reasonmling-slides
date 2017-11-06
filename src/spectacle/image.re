@@ -1,7 +1,4 @@
-external image : ReasonReact.reactClass = "Image" [@@bs.module "spectacle"];
+[@bs.module "spectacle"] external image : ReasonReact.reactClass = "Image";
 
-let make src::(src: string) width::(width: string) children =>
-  ReasonReact.wrapJsForReason
-    reactClass::image
-    props::{ "src": src, "width": width }
-    children;
+let make = (~src: string, ~width: string, children) =>
+  ReasonReact.wrapJsForReason(~reactClass=image, ~props={"src": src, "width": width}, children);

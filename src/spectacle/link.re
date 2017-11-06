@@ -1,7 +1,4 @@
-external link : ReasonReact.reactClass = "Link" [@@bs.module "spectacle"];
+[@bs.module "spectacle"] external link : ReasonReact.reactClass = "Link";
 
-let make href::(href: string) children =>
-  ReasonReact.wrapJsForReason
-    reactClass::link
-    props::{ "href": href }
-    children;
+let make = (~href: string, children) =>
+  ReasonReact.wrapJsForReason(~reactClass=link, ~props={"href": href}, children);

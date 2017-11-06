@@ -1,7 +1,4 @@
-external fit : ReasonReact.reactClass = "Fit" [@@bs.module "spectacle"];
+[@bs.module "spectacle"] external fit : ReasonReact.reactClass = "Fit";
 
-let make children =>
-  ReasonReact.wrapJsForReason
-    reactClass::fit
-    props::(Js.Obj.empty ())
-    children;
+let make = (children) =>
+  ReasonReact.wrapJsForReason(~reactClass=fit, ~props=Js.Obj.empty(), children);
